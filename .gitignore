@@ -1,0 +1,7 @@
+*
+!.gitignore
+!README.md
+!**/
+!frontend/pages/index.html
+!frontend/assets/css/style.css
+!frontend/assets/images/**
