@@ -1,5 +1,8 @@
-# Загружаем конфигурацию
+# Р—Р°РіСЂСѓР¶Р°РµРј РєРѕРЅС„РёРіСѓСЂР°С†РёСЋ Рё С„СѓРЅРєС†РёРё
 . .\Invoke-OnAll.ps1
 
-# Копируем торрент-файл на все компьютеры в папку Downloads
-Invoke-RemoteCopyFile -LocalPath "C:\Users\Student\Desktop\shared\VM\demo305.torrent" -RemoteFolder "C:\Users\Student\Downloads"
+# РљРѕРїРёСЂСѓРµРј С‚РѕСЂСЂРµРЅС‚-С„Р°Р№Р» РЅР° РІСЃРµ РєРѕРјРїСЊСЋС‚РµСЂС‹ РІ РїР°РїРєСѓ Downloads
+$torrentFilePath = Get-Content "..\config\torrent_file_path.txt"
+$torrentFilePath = Get-Content "..\config\torrent_remote_file_path.txt"
+
+Invoke-RemoteCopyFile -LocalPath $torrentFilePath -RemoteFolder $torrentFilePath

@@ -2,8 +2,8 @@
 # Универсальный скрипт запуска ВМ с автопоиском файла .vmx
 
 # ================= НАСТРОЙКИ =================
-$vmrunPath = "C:\Program Files (x86)\VMware\VMware Workstation\vmrun.exe"
-$vmName = "demo305"
+$vmrunPath = Get-Content "..\config\vm_path.txt"
+$vmName = Get-Content "..\config\vm_name.txt"
 $startMode = "gui"              # "gui" (с окном) или "nogui" (в фоне)
 $startupTimeoutSec = 180        # Сколько ждать запуска ВМ
 $checkIntervalSec = 5           # Интервал проверки статуса
@@ -19,42 +19,10 @@ if (-not (Test-Path $vmrunPath)) {
     exit 1
 }
 
-# 🔍 УМНЫЙ ПОИСК: ищем файл .vmx в стандартных местах
-Write-Host "1. Поиск виртуальной машины '$vmName'..." -ForegroundColor Yellow
-$possiblePaths = @(
-    "C:\Users\Student\Desktop\shared\VM\$vmName\$vmName.vmx",
-    "C:\Users\Student\Documents\Virtual Machines\$vmName\$vmName.vmx",
-    "C:\Users\Student\Documents\$vmName\$vmName.vmx",
-    "C:\VMs\$vmName\$vmName.vmx",
-    "D:\VMs\$vmName\$vmName.vmx"
-)
+$vmxPath = Get-Content "..\config\vmx_path.txt"
 
-$vmxPath = $null
-foreach ($p in $possiblePaths) {
-    if (Test-Path $p) {
-        $vmxPath = $p
-        break
-    }
-}
-
-# Если не нашли в стандартных местах — ищем по всему диску C:
-if (-not $vmxPath) {
-    Write-Host "   Не найдена в стандартных местах. Ищу на диске C:..." -ForegroundColor DarkGray
-    $found = Get-ChildItem -Path "C:\" -Filter "$vmName.vmx" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
-    if ($found) {
-        $vmxPath = $found.FullName
-    }
-}
-
-if (-not $vmxPath) {
-    Write-Error "Виртуальная машина '$vmName' не найдена на этом компьютере!"
-    exit 1
-}
-
-Write-Host "   ✅ Найдена: $vmxPath" -ForegroundColor Green
-
-# 2. Проверяем, не запущена ли ВМ уже
-Write-Host "2. Проверка состояния ВМ..." -ForegroundColor Yellow
+# 1. Проверяем, не запущена ли ВМ уже
+Write-Host "1. Проверка состояния ВМ..." -ForegroundColor Yellow
 $runningVMs = & $vmrunPath list 2>&1
 $vmRunning = $runningVMs | Where-Object { $_ -match [regex]::Escape($vmxPath) }
 
@@ -63,8 +31,8 @@ if ($vmRunning) {
     exit 0
 }
 
-# 3. Запускаем ВМ
-Write-Host "3. Запуск ВМ в режиме '$startMode'..." -ForegroundColor Yellow
+# 2. Запускаем ВМ
+Write-Host "2. Запуск ВМ в режиме '$startMode'..." -ForegroundColor Yellow
 & $vmrunPath start $vmxPath $startMode 2>&1 | Out-Null
 
 if ($LASTEXITCODE -ne 0) {
@@ -72,8 +40,8 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# 4. Ждём, пока ВМ реально появится в списке запущенных
-Write-Host "4. Ожидание запуска (до $startupTimeoutSec сек)..." -ForegroundColor Yellow
+# 3. Ждём, пока ВМ реально появится в списке запущенных
+Write-Host "3. Ожидание запуска (до $startupTimeoutSec сек)..." -ForegroundColor Yellow
 $elapsed = 0
 $started = $false
 
@@ -99,9 +67,9 @@ if (-not $started) {
 
 Write-Host "   ✅ ВМ запущена за $elapsed сек." -ForegroundColor Green
 
-# 5. Опционально: ждём получения IP-адреса (требует VMware Tools)
+# 4. Опционально: ждём получения IP-адреса (требует VMware Tools)
 if ($waitForIP) {
-    Write-Host "5. Ожидание получения IP-адреса (до $ipTimeoutSec сек)..." -ForegroundColor Yellow
+    Write-Host "4. Ожидание получения IP-адреса (до $ipTimeoutSec сек)..." -ForegroundColor Yellow
     $elapsed = 0
     $ipObtained = $false
     

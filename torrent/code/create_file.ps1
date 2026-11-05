@@ -1,13 +1,13 @@
 ﻿# ================= НАСТРОЙКИ =================
-$vmFolder = "C:\Users\Student\Documents\Virtual Machines\demo305"
-$torrentFilePath = "C:\Users\Student\Desktop\shared\VM\demo305.torrent"
-$torrentName = "demo305"
+$vmFolder = Get-Content "..\config\vm_folder.txt"
+$torrentFilePath =  Get-Content "..\config\torrent_file_path.txt"
+$torrentName = Get-Content "..\config\torrent_name.txt"
 
-$qbHost = "http://localhost:8082"
-$qbUser = "admin"
+$qbHost = Get-Content "..\..\credentials\host.txt"
+$qbUser = Get-Content "..\..\credentials\user.txt"
 $qbPass = Get-Content "..\..\credentials\torrent_password.txt"
 
-$trackers = "http://192.168.35.10:8001/announce"
+$trackers = Get-Content "..\config\trackers.txt"
 # =============================================
 
 Write-Host "1. Авторизация в qBittorrent..." -ForegroundColor Yellow

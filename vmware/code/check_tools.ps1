@@ -1,7 +1,7 @@
 . .\Invoke-OnAll.ps1
 
 Invoke-OnAll {
-    $vmrun = "C:\Program Files (x86)\VMware\VMware Workstation\vmrun.exe"
+    $vmrun = Get-Content "..\config\vm_path.txt"
     
     # Ищем .vmx файл (как в вашем скрипте)
     $vmx = Get-ChildItem -Path "C:\" -Filter "demo305.vmx" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1

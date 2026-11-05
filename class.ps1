@@ -2,7 +2,7 @@
 # Запуск: PowerShell от администратора ->  C:\class.ps1
 # Нужен файл C:\pcs.csv со столбцами ip,mac
 
-$pcs = Import-Csv 'C:\pcs.csv'
+$pcs = Import-Csv '.\config\pcs.csv'
 $script:cred = $null
 
 function Get-Cred {

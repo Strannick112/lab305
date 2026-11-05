@@ -1,28 +1,28 @@
-# Путь к vmrun (используйте полный путь, если vmrun не в PATH)
-$vmrunPath = "C:\Program Files (x86)\VMware\VMware Workstation\vmrun.exe"
-$vmxPath = "C:\Users\Student\Documents\Virtual Machines\demo305\demo305.vmx"
+# РџСѓС‚СЊ Рє vmrun (РёСЃРїРѕР»СЊР·СѓР№С‚Рµ РїРѕР»РЅС‹Р№ РїСѓС‚СЊ, РµСЃР»Рё vmrun РЅРµ РІ PATH)
+$vmrunPath = Get-Content "..\config\vm_path.txt"
+$vmxPath = Get-Content "..\config\vmx_path.txt"
 
-# Получаем список всех снапшотов
+# РџРѕР»СѓС‡Р°РµРј СЃРїРёСЃРѕРє РІСЃРµС… СЃРЅР°РїС€РѕС‚РѕРІ
 $snapshots = & $vmrunPath -T ws listSnapshots $vmxPath
 
-# Выводим список для проверки
-Write-Host "Найденные снапшоты:" -ForegroundColor Cyan
+# Р’С‹РІРѕРґРёРј СЃРїРёСЃРѕРє РґР»СЏ РїСЂРѕРІРµСЂРєРё
+Write-Host "РќР°Р№РґРµРЅРЅС‹Рµ СЃРЅР°РїС€РѕС‚С‹:" -ForegroundColor Cyan
 Write-Host $snapshots
 
-# Извлекаем имена снапшотов (пропускаем первую строку с общим количеством)
+# РР·РІР»РµРєР°РµРј РёРјРµРЅР° СЃРЅР°РїС€РѕС‚РѕРІ (РїСЂРѕРїСѓСЃРєР°РµРј РїРµСЂРІСѓСЋ СЃС‚СЂРѕРєСѓ СЃ РѕР±С‰РёРј РєРѕР»РёС‡РµСЃС‚РІРѕРј)
 $snapshotNames = $snapshots -split "`n" | Select-Object -Skip 1 | Where-Object { $_ -ne "" }
 
 if ($snapshotNames.Count -eq 0) {
-    Write-Error "Снапшоты не найдены!"
+    Write-Error "РЎРЅР°РїС€РѕС‚С‹ РЅРµ РЅР°Р№РґРµРЅС‹!"
     exit
 }
 
-# Берем последний снапшот (предполагаем, что он самый свежий)
+# Р‘РµСЂРµРј РїРѕСЃР»РµРґРЅРёР№ СЃРЅР°РїС€РѕС‚ (РїСЂРµРґРїРѕР»Р°РіР°РµРј, С‡С‚Рѕ РѕРЅ СЃР°РјС‹Р№ СЃРІРµР¶РёР№)
 $latestSnapshot = $snapshotNames[-1].Trim()
 
-Write-Host "Откатываем к самому свежему снапшоту: $latestSnapshot" -ForegroundColor Yellow
+Write-Host "РћС‚РєР°С‚С‹РІР°РµРј Рє СЃР°РјРѕРјСѓ СЃРІРµР¶РµРјСѓ СЃРЅР°РїС€РѕС‚Сѓ: $latestSnapshot" -ForegroundColor Yellow
 
-# Выполняем откат
+# Р’С‹РїРѕР»РЅСЏРµРј РѕС‚РєР°С‚
 & $vmrunPath -T ws revertToSnapshot $vmxPath $latestSnapshot
 
-Write-Host "Откат завершен!" -ForegroundColor Green
+Write-Host "РћС‚РєР°С‚ Р·Р°РІРµСЂС€РµРЅ!" -ForegroundColor Green

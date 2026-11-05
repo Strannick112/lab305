@@ -1,4 +1,4 @@
-. C:\Scripts\Invoke-OnAll.ps1
+. ..\..\Invoke-OnAll.ps1
 
-cd C:\Scripts\clean_computers
+cd . ..\code
 Invoke-RemoteClean

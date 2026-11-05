@@ -1,6 +1,6 @@
 $cred = Get-Credential   # .\admin
 $pcs  = 11..24 | ForEach-Object { "192.168.35.$_" }
-$gw   = "192.168.35.2"   # чтобы шлюз только убрать, напишите $gw = $null
+$gw   = Get-Content "..\..\config\gateway.txt"
 
 Invoke-Command -ComputerName $pcs -Credential $cred -ArgumentList $gw -ScriptBlock {
     param($gw)

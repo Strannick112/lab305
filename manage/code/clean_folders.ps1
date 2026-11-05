@@ -14,7 +14,7 @@
 #>
 
 param (
-    [string]$FilePath = ".\path_for_clean.txt",
+    [string]$FilePath = "..\..\config\path_for_clean.txt",
     [switch]$WhatIf
 )
 

@@ -1,16 +1,17 @@
 <#
 .SYNOPSIS
-    ˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜ ˜˜˜˜ ˜˜ ˜˜˜ ˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜.
+    ĞšĞ¾Ğ¿Ğ¸Ñ€ÑƒĞµÑ‚ Ğ»Ğ¾ĞºĞ°Ğ»ÑŒĞ½Ñ‹Ğ¹ Ñ„Ğ°Ğ¹Ğ» Ğ½Ğ° Ğ²ÑĞµ ÑƒĞ´Ğ°Ğ»Ñ‘Ğ½Ğ½Ñ‹Ğµ ĞºĞ¾Ğ¼Ğ¿ÑŒÑÑ‚ĞµÑ€Ñ‹.
 .DESCRIPTION
-    ˜˜˜˜˜˜ ˜˜˜˜ ˜˜˜˜˜˜˜˜, ˜˜˜˜˜˜˜˜ ˜˜˜ ˜ base64 ˜ ˜˜˜˜˜˜˜ ˜˜˜˜˜ WinRM.
-    ˜˜ ˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜ ˜ ˜˜˜˜˜˜˜˜˜ ˜˜ ˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜.
+    Ğ§Ğ¸Ñ‚Ğ°ĞµÑ‚ Ñ„Ğ°Ğ¹Ğ» Ğ»Ğ¾ĞºĞ°Ğ»ÑŒĞ½Ğ¾, ĞºĞ¾Ğ´Ğ¸Ñ€ÑƒĞµÑ‚ ĞµĞ³Ğ¾ Ğ² base64 Ğ¸ Ğ¿ĞµÑ€ĞµĞ´Ğ°Ñ‘Ñ‚ Ñ‡ĞµÑ€ĞµĞ· WinRM.
+    ĞĞ° ÑƒĞ´Ğ°Ğ»Ñ‘Ğ½Ğ½Ñ‹Ñ… Ğ¼Ğ°ÑˆĞ¸Ğ½Ğ°Ñ… Ğ´ĞµĞºĞ¾Ğ´Ğ¸Ñ€ÑƒĞµÑ‚ Ğ¸ ÑĞ¾Ñ…Ñ€Ğ°Ğ½ÑĞµÑ‚ Ğ¿Ğ¾ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ğ½Ğ¾Ğ¼Ñƒ Ğ¿ÑƒÑ‚Ğ¸.
 .EXAMPLE
-    # ˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜-˜˜˜˜ ˜ ˜˜˜˜˜ Downloads ˜˜ ˜˜˜˜ ˜˜˜˜˜˜˜
+    # ĞšĞ¾Ğ¿Ğ¸Ñ€Ğ¾Ğ²Ğ°Ñ‚ÑŒ Ñ‚Ğ¾Ñ€Ñ€ĞµĞ½Ñ‚-Ñ„Ğ°Ğ¹Ğ» Ğ² Ğ¿Ğ°Ğ¿ĞºÑƒ Downloads Ğ½Ğ° Ğ²ÑĞµÑ… Ğ¼Ğ°ÑˆĞ¸Ğ½Ğ°Ñ…
     Invoke-RemoteCopyFile -LocalPath "C:\Users\Student\Desktop\shared\VM\demo305.torrent" -RemotePath "C:\Users\Student\Downloads\demo305.torrent"
 .EXAMPLE
-    # ˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜ ˜ ˜˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜ ˜ ˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜
+    # ĞšĞ¾Ğ¿Ğ¸Ñ€Ğ¾Ğ²Ğ°Ñ‚ÑŒ Ñ„Ğ°Ğ¹Ğ» Ñ ÑĞ¾Ñ…Ñ€Ğ°Ğ½ĞµĞ½Ğ¸ĞµĞ¼ Ğ¸Ğ¼ĞµĞ½Ğ¸ Ğ² ÑƒĞºĞ°Ğ·Ğ°Ğ½Ğ½ÑƒÑ Ğ¿Ğ°Ğ¿ĞºÑƒ
     Invoke-RemoteCopyFile -LocalPath ".\scripts\install.ps1" -RemoteFolder "C:\temp"
 #>
+
 function Invoke-RemoteCopyFile {
     [CmdletBinding()]
     param(
@@ -18,42 +19,42 @@ function Invoke-RemoteCopyFile {
         [ValidateScript({ Test-Path $_ -PathType Leaf })]
         [string]$LocalPath,
 
-        # ˜˜˜˜˜˜ ˜˜˜˜ ˜˜ ˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜ (˜ ˜˜˜˜˜˜ ˜˜˜˜˜)
+        # ĞŸĞ¾Ğ»Ğ½Ñ‹Ğ¹ Ğ¿ÑƒÑ‚ÑŒ Ğ½Ğ° ÑƒĞ´Ğ°Ğ»Ñ‘Ğ½Ğ½Ğ¾Ğ¹ Ğ¼Ğ°ÑˆĞ¸Ğ½Ğµ (Ñ Ğ¸Ğ¼ĞµĞ½ĞµĞ¼ Ñ„Ğ°Ğ¹Ğ»Ğ°)
         [string]$RemotePath,
 
-        # ˜˜˜: ˜˜˜˜˜ ˜˜ ˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜ (˜˜˜ ˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜)
+        # Ğ˜Ğ›Ğ˜: Ğ¿Ğ°Ğ¿ĞºĞ° Ğ½Ğ° ÑƒĞ´Ğ°Ğ»Ñ‘Ğ½Ğ½Ğ¾Ğ¹ Ğ¼Ğ°ÑˆĞ¸Ğ½Ğµ (Ğ¸Ğ¼Ñ Ñ„Ğ°Ğ¹Ğ»Ğ° ÑĞ¾Ñ…Ñ€Ğ°Ğ½Ğ¸Ñ‚ÑÑ)
         [string]$RemoteFolder,
 
         [switch]$Force
     )
 
-    if (-not $global:computers -or $global:computers.Count -eq 0) { throw "˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜˜ ˜˜ ˜˜˜˜˜˜˜˜." }
-    if (-not $global:cred) { throw "˜˜˜˜˜˜˜ ˜˜˜˜˜˜ ˜˜ ˜˜˜˜˜˜˜˜˜." }
+    if (-not $global:computers -or $global:computers.Count -eq 0) { throw "Ğ¡Ğ¿Ğ¸ÑĞ¾Ğº ĞºĞ¾Ğ¼Ğ¿ÑŒÑÑ‚ĞµÑ€Ğ¾Ğ² Ğ½Ğµ Ğ·Ğ°Ğ³Ñ€ÑƒĞ¶ĞµĞ½." }
+    if (-not $global:cred) { throw "Ğ£Ñ‡Ñ‘Ñ‚Ğ½Ñ‹Ğµ Ğ´Ğ°Ğ½Ğ½Ñ‹Ğµ Ğ½Ğµ Ğ·Ğ°Ğ³Ñ€ÑƒĞ¶ĞµĞ½Ñ‹." }
 
-    # ˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜ ˜˜˜˜
+    # ĞĞ¿Ñ€ĞµĞ´ĞµĞ»ÑĞµĞ¼ Ñ†ĞµĞ»ĞµĞ²Ğ¾Ğ¹ Ğ¿ÑƒÑ‚ÑŒ
     $fileName = [System.IO.Path]::GetFileName($LocalPath)
     if ($RemotePath) {
         $targetPath = $RemotePath
     } elseif ($RemoteFolder) {
         $targetPath = Join-Path $RemoteFolder $fileName
     } else {
-        throw "˜˜˜˜˜˜˜ ˜˜˜˜ -RemotePath, ˜˜˜˜ -RemoteFolder"
+        throw "Ğ£ĞºĞ°Ğ¶Ğ¸Ñ‚Ğµ Ğ»Ğ¸Ğ±Ğ¾ -RemotePath, Ğ»Ğ¸Ğ±Ğ¾ -RemoteFolder"
     }
 
-    # ˜˜˜˜˜˜ ˜˜˜˜ ˜˜˜˜˜˜˜˜ ˜ ˜˜˜˜˜˜˜˜ ˜ base64
+    # Ğ§Ğ¸Ñ‚Ğ°ĞµĞ¼ Ñ„Ğ°Ğ¹Ğ» Ğ»Ğ¾ĞºĞ°Ğ»ÑŒĞ½Ğ¾ Ğ¸ ĞºĞ¾Ğ´Ğ¸Ñ€ÑƒĞµĞ¼ Ğ² base64
     $fileBytes = [System.IO.File]::ReadAllBytes((Resolve-Path $LocalPath))
     $fileSize = $fileBytes.Length
     $fileBase64 = [Convert]::ToBase64String($fileBytes)
 
     Write-Host "===================================================" -ForegroundColor Cyan
-    Write-Host "˜˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜ ˜˜ $($global:computers.Count) ˜˜˜˜˜˜˜˜˜˜˜" -ForegroundColor Cyan
-    Write-Host "˜˜˜˜˜˜˜˜ : $LocalPath" -ForegroundColor Cyan
-    Write-Host "˜˜˜˜     : $targetPath" -ForegroundColor Cyan
-    Write-Host "˜˜˜˜˜˜   : $([math]::Round($fileSize / 1KB, 2)) KB" -ForegroundColor Cyan
+    Write-Host "ĞšĞ¾Ğ¿Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Ñ„Ğ°Ğ¹Ğ»Ğ° Ğ½Ğ° $($global:computers.Count) ĞºĞ¾Ğ¼Ğ¿ÑŒÑÑ‚ĞµÑ€Ğ¾Ğ²" -ForegroundColor Cyan
+    Write-Host "Ğ˜ÑÑ‚Ğ¾Ñ‡Ğ½Ğ¸Ğº : $LocalPath" -ForegroundColor Cyan
+    Write-Host "Ğ¦ĞµĞ»ÑŒ     : $targetPath" -ForegroundColor Cyan
+    Write-Host "Ğ Ğ°Ğ·Ğ¼ĞµÑ€   : $([math]::Round($fileSize / 1KB, 2)) KB" -ForegroundColor Cyan
     Write-Host "===================================================" -ForegroundColor Cyan
 
     if ($fileSize -gt 50MB) {
-        Write-Warning "˜˜˜˜ ˜˜˜˜˜˜ 50 ˜˜. ˜˜˜˜˜˜˜˜ ˜˜˜˜˜ ˜˜˜˜˜˜ ˜˜˜˜˜."
+        Write-Warning "Ğ¤Ğ°Ğ¹Ğ» Ğ±Ğ¾Ğ»ÑŒÑˆĞµ 50 ĞœĞ‘. ĞŸĞµÑ€ĞµĞ´Ğ°Ñ‡Ğ° Ğ¼Ğ¾Ğ¶ĞµÑ‚ Ğ·Ğ°Ğ½ÑÑ‚ÑŒ Ğ²Ñ€ĞµĞ¼Ñ."
     }
 
     $startTime = Get-Date
@@ -64,24 +65,24 @@ function Invoke-RemoteCopyFile {
         $error = $null
 
         try {
-            # ˜˜˜˜˜˜ ˜˜˜˜˜, ˜˜˜˜ ˜ ˜˜˜
+            # Ğ¡Ğ¾Ğ·Ğ´Ğ°Ñ‘Ğ¼ Ğ¿Ğ°Ğ¿ĞºÑƒ, ĞµÑĞ»Ğ¸ ĞµÑ‘ Ğ½ĞµÑ‚
             $targetDir = Split-Path -Parent $using:targetPath
             if (-not (Test-Path $targetDir)) {
                 New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
             }
 
-            # ˜˜˜˜˜˜˜˜˜˜ base64 ˜ ˜˜˜˜˜˜˜˜˜ ˜˜˜˜
+            # Ğ”ĞµĞºĞ¾Ğ´Ğ¸Ñ€ÑƒĞµĞ¼ base64 Ğ¸ ÑĞ¾Ñ…Ñ€Ğ°Ğ½ÑĞµĞ¼ Ñ„Ğ°Ğ¹Ğ»
             $bytes = [Convert]::FromBase64String($using:fileBase64)
             [System.IO.File]::WriteAllBytes($using:targetPath, $bytes)
 
-            # ˜˜˜˜˜˜˜˜˜, ˜˜˜ ˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜
+            # ĞŸÑ€Ğ¾Ğ²ĞµÑ€ÑĞµĞ¼, Ñ‡Ñ‚Ğ¾ Ñ„Ğ°Ğ¹Ğ» Ğ´ĞµĞ¹ÑÑ‚Ğ²Ğ¸Ñ‚ĞµĞ»ÑŒĞ½Ğ¾ ÑĞ¾Ğ·Ğ´Ğ°Ğ½
             if (-not (Test-Path $using:targetPath)) {
-                throw "˜˜˜˜ ˜˜ ˜˜˜ ˜˜˜˜˜˜ ˜˜˜˜˜ ˜˜˜˜˜˜"
+                throw "Ğ¤Ğ°Ğ¹Ğ» Ğ½Ğµ Ğ±Ñ‹Ğ» ÑĞ¾Ğ·Ğ´Ğ°Ğ½ Ğ¿Ğ¾ÑĞ»Ğµ Ğ·Ğ°Ğ¿Ğ¸ÑĞ¸"
             }
 
             $actualSize = (Get-Item $using:targetPath).Length
             if ($actualSize -ne $bytes.Length) {
-                throw "˜˜˜˜˜˜ ˜˜˜˜˜ ˜˜ ˜˜˜˜˜˜˜˜˜: ˜˜˜˜˜˜˜˜˜ $($bytes.Length), ˜˜˜˜˜˜˜˜ $actualSize"
+                throw "Ğ Ğ°Ğ·Ğ¼ĞµÑ€ Ñ„Ğ°Ğ¹Ğ»Ğ° Ğ½Ğµ ÑĞ¾Ğ²Ğ¿Ğ°Ğ´Ğ°ĞµÑ‚: Ğ¾Ğ¶Ğ¸Ğ´Ğ°Ğ»Ğ¾ÑÑŒ $($bytes.Length), Ğ¿Ğ¾Ğ»ÑƒÑ‡ĞµĞ½Ğ¾ $actualSize"
             }
         }
         catch {
@@ -105,9 +106,9 @@ function Invoke-RemoteCopyFile {
 
     $totalTime = (Get-Date) - $startTime
 
-    # ============ ˜˜?˜ ============
+    # ============ ĞĞ¢Ğ§ĞĞ¢ ============
     Write-Host "`n===================================================" -ForegroundColor Cyan
-    Write-Host "˜˜?˜ ˜ ˜˜˜˜˜˜˜˜˜˜˜" -ForegroundColor Cyan
+    Write-Host "ĞĞ¢Ğ§ĞĞ¢ Ğ ĞšĞĞŸĞ˜Ğ ĞĞ’ĞĞĞ˜Ğ˜" -ForegroundColor Cyan
     Write-Host "===================================================" -ForegroundColor Cyan
 
     $okCount   = ($results | Where-Object { $_.Status -eq "OK" }).Count
@@ -115,14 +116,14 @@ function Invoke-RemoteCopyFile {
 
     foreach ($r in $results) {
         $color = if ($r.Status -eq "OK") { "Green" } else { "Red" }
-        Write-Host ("{0,-20} [{1}] {2} ˜˜˜" -f $r.ComputerName, $r.Status, $r.DurationSec) -ForegroundColor $color
+        Write-Host ("{0,-20} [{1}] {2} ÑĞµĞº" -f $r.ComputerName, $r.Status, $r.DurationSec) -ForegroundColor $color
         if ($r.Error) {
-            Write-Host "    ˜˜˜˜˜˜: $($r.Error)" -ForegroundColor Red
+            Write-Host "    ĞĞ¨Ğ˜Ğ‘ĞšĞ: $($r.Error)" -ForegroundColor Red
         }
     }
 
     Write-Host "---------------------------------------------------"
-    Write-Host "˜˜˜˜˜: $($results.Count) | OK: $okCount | FAIL: $failCount | ˜˜˜˜˜: $([math]::Round($totalTime.TotalSeconds, 1)) ˜˜˜" -ForegroundColor Cyan
+    Write-Host "Ğ’ÑĞµĞ³Ğ¾: $($results.Count) | OK: $okCount | FAIL: $failCount | Ğ’Ñ€ĞµĞ¼Ñ: $([math]::Round($totalTime.TotalSeconds, 1)) ÑĞµĞº" -ForegroundColor Cyan
 
     return $results
 }

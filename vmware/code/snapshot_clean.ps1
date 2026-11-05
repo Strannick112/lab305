@@ -1,10 +1,10 @@
 ﻿# ================= НАСТРОЙКИ =================
-$vmxPath = "C:\Users\Student\Documents\Virtual Machines\demo305\demo305.vmx"
+$vmxPath = Get-Content "..\config\vmx_path.txt"
 
 # Автоматический поиск vmrun.exe
-$vmrunPath = "C:\Program Files (x86)\VMware\VMware Workstation\vmrun.exe"
+$vmrunPath = Get-Content "..\config\vm_path.txt"
 if (-Not (Test-Path $vmrunPath)) {
-    $vmrunPath = "C:\Program Files\VMware\VMware Workstation\vmrun.exe"
+    $vmrunPath = Get-Content "..\config\vm_x64_path.txt"
 }
 
 if (-Not (Test-Path $vmrunPath)) {

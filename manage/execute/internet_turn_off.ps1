@@ -1,4 +1,4 @@
-. C:\Scripts\Invoke-OnAll.ps1
+. ..\..\Invoke-OnAll.ps1
 
 Invoke-OnAll { Remove-NetRoute -DestinationPrefix "0.0.0.0/0" -Confirm:$false -ErrorAction SilentlyContinue Write-Host "Интернет отключен на $(hostname)" } 
 

@@ -9,10 +9,9 @@ Write-Host "========================================" -ForegroundColor Cyan
 
 try {
     # 1. Проверяем наличие файлов
-    $credPath = "C:\Scripts\"
-    $userFile = "$credPath\username.txt"
-    $passFile = "$credPath\password.txt"
-    $compFile = "$credPath\computers.txt"
+    $userFile = ".\credentials\username.txt"
+    $passFile = ".\credentials\password.txt"
+    $compFile = ".\config\computers.txt"
 
     if (-not (Test-Path $userFile)) { throw "Не найден файл: $userFile" }
     if (-not (Test-Path $passFile)) { throw "Не найден файл: $passFile" }
