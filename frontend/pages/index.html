@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аудитория 305</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header class="container-fluid py-3 mb-4">
+        <div class="row align-items-center fw-bold">
+            <!-- Колонка 1: Логотип -->
+            <div class="col-12 col-md-4 d-flex justify-content-start mb-3 mb-md-0">
+                <a class="d-flex align-items-center text-dark text-decoration-none" href="#">
+                    <img class="bi me-2" width="32" height="32" src="../assets/images/lab-logo.png" alt="">
+                    <span class="nav-link">Аудитория 305</span>
+                </a>
+            </div>
+            <!-- Колонка 2: Сервисы -->
+            <div class="col-12 col-md-4 mb-3 mb-md-0">
+                <ul class="nav justify-content-center">
+                    <li><a class="nav-link px-2" href="http://192.168.35.10:3000">Gitea</a></li>
+                    <li><a class="nav-link px-2" href="http://192.168.35.10:9000">Файловый сервер</a></li>
+                    <li><a class="nav-link px-2" href="vlc://rtmp://192.168.35.10:10/live/screen">VLC</a></li>
+                    <li><a class="nav-link px-2" href="http://192.168.35.10:8624">ProGet</a></li>
+                    <li><a class="nav-link px-2" href="http://192.168.35.10:9292">DevDocs</a></li>        
+                </ul>
+            </div>
+            <!-- Колонка 3: Информация -->
+            <div class="col-12 col-md-4">
+                <ul class="nav justify-content-center justify-content-md-end">
+                    <li><a class="nav-link px-2" href="rules.html">Правила</a></li>
+                    <li><a class="nav-link px-2" href="https://dec.mgutm.ru/WebApp/#/Rasp/Aud/25058604">Расписание</a></li>
+                    <li><a class="nav-link px-2" href="https://razoom.mgutm.ru/course/index.php?categoryid=67">Разум</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <main class="container py-5">
+        <div class="container">
+            <div class="slider-container">
+                <!-- Главный контейнер Swiper -->
+                <div class="swiper mySwiper">
+                    <div class="swiper-wrapper">
+                        <!-- Карточка 1 -->
+                        <div class="swiper-slide">
+                            <a class="card h-100 shadow-sm text-decoration-none" id="card__proget" href="http://192.168.35.10:8624">
+                                <div class="card-body text-center">
+                                    <div class="circle">
+                                        <img class="logo img-thumbnail rounded-circle" src="../assets/images/proget-logo.svg" alt="">
+                                    </div>
+                                    <p>ProGet</p>
+                                </div> 
+                            </a>
+                        </div>
+                        <!-- Карточка 2 -->
+                        <div class="swiper-slide">
+                            <a class="card h-100 shadow-sm text-decoration-none" id="card__devdocs" href="http://192.168.35.10:9292">
+                                <div class="card-body text-center">
+                                    <div class="circle">
+                                        <img class="logo img-thumbnail rounded-circle" src="../assets/images/devdocs-logo.svg" alt="">
+                                    </div>
+                                    <p>DevDocs</p>
+                                </div>
+                            </a>
+                        </div>
+                        <!-- Карточка 3 -->
+                        <div class="swiper-slide">
+                            <a class="card h-100 shadow-sm text-decoration-none" id="card__gitea" href="http://192.168.35.10:3000">
+                                <div class="card-body text-center">
+                                    <div class="circle">
+                                        <img class="logo img-thumbnail rounded-circle" src="../assets/images/gitea-logo.svg" alt="">
+                                    </div>
+                                    <p>Gitea</p>
+                                </div>
+                            </a>
+                        </div>
+                        <!-- Карточка 4 -->
+                        <div class="swiper-slide">
+                            <a class="card h-100 shadow-sm text-decoration-none" id="card__fileserver" href="http://192.168.35.10:9000">
+                                <div class="card-body text-center">
+                                    <div class="circle">
+                                        <img class="logo img-thumbnail rounded-circle" src="../assets/images/fileserver-logo.svg" alt="">
+                                    </div>
+                                    <p>Файловый сервер</p>
+                                </div>
+                            </a>
+                        </div>
+                        <!-- Карточка 5 -->
+                        <div class="swiper-slide">
+                            <a class="card h-100 shadow-sm text-decoration-none" id="card__vlc" href="vlc://rtmp://192.168.35.10:10/live/screen">
+                                <div class="card-body text-center">
+                                    <div class="circle">
+                                        <img class="logo img-thumbnail rounded-circle" src="../assets/images/vlc-logo.svg" alt="">
+                                    </div>
+                                    <p>VLC</p>
+                                </div>
+                            </a>
+                        </div>
+                        <!-- Сюда можно просто добавлять новые карточки, они автоматически подхватятся -->
+                    </div>
+                </div>
+                <!-- Кнопки навигации (стрелки) -->
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+            </div>
+        </div>
+    </main>
+    <footer class="py-3 my-4">
+        <p class="text-center text-body-secondary">2026</p>
+    </footer>
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/swiper-bundle.min.js"></script>
+    <script>
+        const swiper = new Swiper('.mySwiper', {
+            loop: true,
+            slidesPerView: 1,
+            grabCursor: true,
+            spaceBetween: 64,
+            effect: 'coverflow',
+            coverflowEffect: {
+                rotate: 5,
+                depth: 0,
+                modifier: 3,
+                slideShadows: false
+            },
+            
+            navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+            },
+            
+            breakpoints: {
+            576: {
+                slidesPerView: 2,
+            },
+            768: {
+                slidesPerView: 3,
+            },
+            992: {
+                slidesPerView: 4,
+            },
+            1200: {
+                slidesPerView: 5,
+            }
+            }
+        });
+</script>
+</body>
+</html>
