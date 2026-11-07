@@ -2,3 +2,4 @@
 
 cd . ..\code
 Invoke-RemoteClean
+cd .\manage\execute

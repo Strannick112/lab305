@@ -1,6 +1,6 @@
 ﻿# class.ps1 - управление компьютерами аудитории
 # Запуск: PowerShell от администратора ->  C:\class.ps1
-# Нужен файл C:\pcs.csv со столбцами ip,mac
+# Нужен файл '.\config\pcs.csv' со столбцами ip,mac
 
 $pcs = Import-Csv '.\config\pcs.csv'
 $script:cred = $null
