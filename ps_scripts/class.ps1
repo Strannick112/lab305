@@ -2,12 +2,12 @@
 # Запуск: PowerShell от администратора ->  C:\class.ps1
 # Нужен файл '$PSScriptRoot\config\pcs.csv' со столбцами ip,mac
 
-$pcs = Import-Csv '$PSScriptRoot\config\pcs.csv'
+$pcs = Import-Csv "$PSScriptRoot\config\pcs.csv"
 $script:cred = $null
 
 function Get-Cred {
     if (-not $script:cred) {
-        $script:cred = Get-Credential -UserName '$PSScriptRoot\admin' -Message 'Пароль локального админа'
+        $script:cred = Get-Credential -UserName "$PSScriptRoot\admin" -Message 'Пароль локального админа'
     }
     $script:cred
 }
