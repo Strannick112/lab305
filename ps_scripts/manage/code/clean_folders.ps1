@@ -8,13 +8,13 @@
     - [FILE]   - delete file
     Reports size of deleted items.
 .PARAMETER FilePath
-    Path to the text file with list of paths. Default: .\path_for_clean.txt
+    Path to the text file with list of paths. Default: $PSScriptRoot\path_for_clean.txt
 .PARAMETER WhatIf
     Preview mode. Shows what would be deleted (with sizes) without actual deletion.
 #>
 
 param (
-    [string]$FilePath = "..\..\config\path_for_clean.txt",
+    [string]$FilePath = "$PSScriptRoot\..\..\config\path_for_clean.txt",
     [switch]$WhatIf
 )
 

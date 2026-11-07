@@ -2,8 +2,8 @@
 # Универсальный скрипт запуска ВМ с автопоиском файла .vmx
 
 # ================= НАСТРОЙКИ =================
-$vmrunPath = Get-Content "..\config\vm_path.txt"
-$vmName = Get-Content "..\config\vm_name.txt"
+$vmrunPath = Get-Content "$PSScriptRoot\..\config\vm_path.txt"
+$vmName = Get-Content "$PSScriptRoot\..\config\vm_name.txt"
 $startMode = "gui"              # "gui" (с окном) или "nogui" (в фоне)
 $startupTimeoutSec = 180        # Сколько ждать запуска ВМ
 $checkIntervalSec = 5           # Интервал проверки статуса

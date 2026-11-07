@@ -4,3 +4,4 @@ ps_scripts/credentials/username.txt
 ps_scripts/config/computers_all.txt
 ps_scripts/config/computers.txt
 ps_scripts/config/pcs.csv
+ps_scripts/torrent/config/config.ps1

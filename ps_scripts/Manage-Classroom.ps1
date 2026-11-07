@@ -9,9 +9,9 @@ Write-Host "========================================" -ForegroundColor Cyan
 
 try {
     # 1. Проверяем наличие файлов
-    $userFile = ".\credentials\username.txt"
-    $passFile = ".\credentials\password.txt"
-    $compFile = ".\config\computers.txt"
+    $userFile = "$PSScriptRoot\credentials\username.txt"
+    $passFile = "$PSScriptRoot\credentials\password.txt"
+    $compFile = "$PSScriptRoot\config\computers.txt"
 
     if (-not (Test-Path $userFile)) { throw "Не найден файл: $userFile" }
     if (-not (Test-Path $passFile)) { throw "Не найден файл: $passFile" }

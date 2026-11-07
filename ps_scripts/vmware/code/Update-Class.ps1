@@ -8,7 +8,7 @@
 
 param(
     [string]$SnapshotName = "Ocrober2026update",
-    [string]$VmName       = Get-Content "..\config\vm_name.txt",
+    [string]$VmName       = Get-Content "$PSScriptRoot\..\config\vm_name.txt",
     [switch]$WhatIf,
     [switch]$SkipStop,
     [switch]$SkipRevert,

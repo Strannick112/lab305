@@ -1,5 +1,3 @@
-. ..\..\Invoke-OnAll.ps1
+. $PSScriptRoot\..\..\Invoke-OnAll.ps1
 
-cd . ..\code
 Invoke-RemoteClean
-cd .\manage\execute

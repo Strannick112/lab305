@@ -1,5 +1,4 @@
-cd ..\..
-. .\Invoke-OnAll.ps1
+. $PSScriptRoot\..\..\Invoke-OnAll.ps1
 
 Invoke-OnAll { Remove-NetRoute -DestinationPrefix "0.0.0.0/0" -Confirm:$false -ErrorAction SilentlyContinue Write-Host "Интернет отключен на $(hostname)" } 
 
@@ -13,4 +12,3 @@ Invoke-Command -ComputerName $pcs -Credential $cred -ArgumentList $gw -ScriptBlo
     if ($gw) { New-NetRoute -DestinationPrefix "0.0.0.0/0" -InterfaceAlias "Ethernet" -NextHop $gw | Out-Null }
     "{0}: {1}" -f $env:COMPUTERNAME, ((Get-NetRoute -DestinationPrefix "0.0.0.0/0" -ErrorAction SilentlyContinue).NextHop -join ',')
 }
-cd .\manage\execute

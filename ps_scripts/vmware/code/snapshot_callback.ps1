@@ -1,6 +1,6 @@
 # Путь к vmrun (используйте полный путь, если vmrun не в PATH)
-$vmrunPath = Get-Content "..\config\vm_path.txt"
-$vmxPath = Get-Content "..\config\vmx_path.txt"
+$vmrunPath = Get-Content "$PSScriptRoot\..\config\vm_path.txt"
+$vmxPath = Get-Content "$PSScriptRoot\..\config\vmx_path.txt"
 
 # Получаем список всех снапшотов
 $snapshots = & $vmrunPath -T ws listSnapshots $vmxPath

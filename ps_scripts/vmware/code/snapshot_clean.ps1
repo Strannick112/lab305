@@ -1,10 +1,10 @@
 ﻿# ================= НАСТРОЙКИ =================
-$vmxPath = Get-Content "..\config\vmx_path.txt"
+$vmxPath = Get-Content "$PSScriptRoot\..\config\vmx_path.txt"
 
 # Автоматический поиск vmrun.exe
-$vmrunPath = Get-Content "..\config\vm_path.txt"
+$vmrunPath = Get-Content "$PSScriptRoot\..\config\vm_path.txt"
 if (-Not (Test-Path $vmrunPath)) {
-    $vmrunPath = Get-Content "..\config\vm_x64_path.txt"
+    $vmrunPath = Get-Content "$PSScriptRoot\..\config\vm_x64_path.txt"
 }
 
 if (-Not (Test-Path $vmrunPath)) {
