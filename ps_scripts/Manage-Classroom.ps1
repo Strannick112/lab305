@@ -1,4 +1,4 @@
-# List-Computers.ps1 — диагностика и список компьютеров
+﻿# List-Computers.ps1 — диагностика и список компьютеров
 
 # Принудительно выводим всё в консоль
 $Host.UI.RawUI.WindowTitle = "Список компьютеров"
@@ -11,7 +11,7 @@ try {
     # 1. Проверяем наличие файлов
     $userFile = "$PSScriptRoot\credentials\username.txt"
     $passFile = "$PSScriptRoot\credentials\password.txt"
-    $compFile = "$PSScriptRoot\config\computers.txt"
+    $compFile = (Import-Csv "$PSScriptRoot\config\pcs.csv").ip
 
     if (-not (Test-Path $userFile)) { throw "Не найден файл: $userFile" }
     if (-not (Test-Path $passFile)) { throw "Не найден файл: $passFile" }

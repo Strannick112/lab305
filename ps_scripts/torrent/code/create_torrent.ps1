@@ -2,9 +2,10 @@
 # Подключаем конфигурацию из той же папки
 . "$PSScriptRoot\..\config\config.ps1"
 
+
 Write-Host "1. Авторизация в qBittorrent..." -ForegroundColor Yellow
 $session = New-Object Microsoft.PowerShell.Commands.WebRequestSession
-$loginResponse = Invoke-WebRequest -Uri "$qbHost/api/v2/auth/login" -Method Post -Body @{ username = $qbUser; password = $qbPass } -WebSession $session
+$loginResponse = Invoke-WebRequest -Uri "$qbHost/api/v2/auth/login" -Method Post -Body @{ username = $qbUser; password = $qbPass } -WebSession $session -UseBasicParsing
 
 if ($loginResponse.Content -ne "Ok.") {
     Write-Error "Ошибка авторизации. Проверьте логин и пароль в config.ps1."
@@ -13,7 +14,7 @@ if ($loginResponse.Content -ne "Ok.") {
 
 Write-Host "2. Запуск задачи создания торрента..." -ForegroundColor Yellow
 $taskBody = @{
-    sourcePath        = $vmFolder
+    sourcePath        = $vmSimLinksFolder
     torrentFilePath   = $torrentFilePath
     format            = "hybrid"
     startSeeding      = "true"
@@ -24,7 +25,7 @@ $taskBody = @{
     trackers          = $trackers
 }
 
-$taskResponse = Invoke-WebRequest -Uri "$qbHost/api/v2/torrentcreator/addTask" -Method Post -Body $taskBody -WebSession $session
+$taskResponse = Invoke-WebRequest -Uri "$qbHost/api/v2/torrentcreator/addTask" -Method Post -Body $taskBody -WebSession $session -UseBasicParsing
 $taskData = $taskResponse.Content | ConvertFrom-Json
 $taskId = $taskData.taskID
 Write-Host "   Задача создана. ID: $taskId" -ForegroundColor Cyan
@@ -49,7 +50,7 @@ while ($attempt -lt $maxAttempts) {
     }
 
     # Проверка через API
-    $statusResponse = Invoke-WebRequest -Uri "$qbHost/api/v2/torrentcreator/status?taskID=$taskId" -Method Get -WebSession $session
+    $statusResponse = Invoke-WebRequest -Uri "$qbHost/api/v2/torrentcreator/status?taskID=$taskId" -Method Get -WebSession $session -UseBasicParsing
     $statusData = $statusResponse.Content | ConvertFrom-Json
     
     $currentStatus = if ($statusData.status) { $statusData.status } else { $statusData[0].status }
@@ -70,7 +71,7 @@ if ($status -ne "Finished") {
 
 Write-Host "4. Очистка задачи на сервере..." -ForegroundColor Yellow
 try {
-    Invoke-WebRequest -Uri "$qbHost/api/v2/torrentcreator/deleteTask" -Method Post -Body "taskID=$taskId" -WebSession $session -ErrorAction Stop | Out-Null
+    Invoke-WebRequest -Uri "$qbHost/api/v2/torrentcreator/deleteTask" -Method Post -Body "taskID=$taskId" -WebSession $session -UseBasicParsing -ErrorAction Stop | Out-Null 
 } catch {
     # Игнорируем ошибки очистки, так как файл уже создан
 }

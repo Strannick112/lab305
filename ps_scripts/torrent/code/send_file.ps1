@@ -11,7 +11,6 @@
     # Копировать файл с сохранением имени в указанную папку
     Invoke-RemoteCopyFile -LocalPath ".\scripts\install.ps1" -RemoteFolder "C:\temp"
 #>
-
 function Invoke-RemoteCopyFile {
     [CmdletBinding()]
     param(
@@ -62,7 +61,8 @@ function Invoke-RemoteCopyFile {
     $results = Invoke-Command -ComputerName $global:computers -Credential $global:cred -ScriptBlock {
         $sw = [System.Diagnostics.Stopwatch]::StartNew()
         $status = "OK"
-        $error = $null
+        # 🔑 ИСПРАВЛЕНО: $error → $errorMsg (переменная $error зарезервирована PowerShell)
+        $errorMsg = $null
 
         try {
             # Создаём папку, если её нет
@@ -87,7 +87,8 @@ function Invoke-RemoteCopyFile {
         }
         catch {
             $status = "FAIL"
-            $error = $_.Exception.Message
+            # 🔑 ИСПРАВЛЕНО: $error → $errorMsg
+            $errorMsg = $_.Exception.Message
         }
         finally {
             $sw.Stop()
@@ -96,7 +97,8 @@ function Invoke-RemoteCopyFile {
         [pscustomobject]@{
             ComputerName = $env:COMPUTERNAME
             Status       = $status
-            Error        = $error
+            # 🔑 ИСПРАВЛЕНО: Error = $error → Error = $errorMsg
+            Error        = $errorMsg
             Size         = $using:fileSize
             DurationSec  = [math]::Round($sw.Elapsed.TotalSeconds, 2)
         }

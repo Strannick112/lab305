@@ -2,12 +2,22 @@
 $list = Import-Csv "$PSScriptRoot\..\..\config\pcs.csv"
 $script:cred = $null
 
+# Write-Host "list: $list, path: $PSScriptRoot\..\..\config\pcs.csv"
 
 function Get-Cred {
     if (-not $script:cred) {
         $script:cred = Get-Credential -UserName "$PSScriptRoot\admin" -Message 'Пароль локального админа'
     }
     $script:cred
+}
+
+function Select-PCs {
+    $r = Read-Host 'Какие компьютеры? Диапазон последних цифр IP, например 11-24 (Enter = все)'
+    if ([string]::IsNullOrWhiteSpace($r)) { return $pcs }
+    if ($r -match '^(\d+)-(\d+)$') { $a = [int]$Matches[1]; $b = [int]$Matches[2] }
+    elseif ($r -match '^\d+$')     { $a = [int]$r; $b = $a }
+    else { Write-Host 'Не понял, беру всех'; return $pcs }
+    $pcs | Where-Object { $n = [int]($_.ip.Split('.')[-1]); $n -ge $a -and $n -le $b }
 }
 
 function Get-Online($list) {
@@ -34,11 +44,11 @@ function Send-WOL($mac) {
     $u.Close()
 }
 
-function Start-All($list) {
+function Start-All() {
     foreach ($p in $list) { 
         Send-WOL $p.mac 
     }
-    Write-Host "Пакеты отправлены: $(@($list).Count). Компьютеры загрузятся через 1-3 минуты (пункт 4 покажет статус)."
+    Write-Host "Пакеты отправлены: $(@($list).Count). Компьютеры загрузятся через 1-3 минуты"
 }
 
 function Invoke-OnAll($list, [scriptblock]$sb, $arg) {

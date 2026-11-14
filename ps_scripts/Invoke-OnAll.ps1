@@ -7,7 +7,7 @@ $CleanScriptPath = "$PSScriptRoot\clean_folders.ps1"
 $CleanPathsFile  = "$PSScriptRoot\config\path_for_clean.txt"
 
 # Загружаем список компьютеров
-$global:computers = Get-Content "$PSScriptRoot\config\computers.txt"
+$global:computers = (Import-Csv "$PSScriptRoot\config\pcs.csv").ip
 
 Write-Host "? Загружено $($computers.Count) компьютеров" -ForegroundColor Green
 Write-Host "Используйте: Invoke-OnAll { ваш_скрипт }" -ForegroundColor Cyan
@@ -99,10 +99,8 @@ function Invoke-RemoteScriptFolder {
     param(
         [Parameter(Mandatory = $true)]
         [string]$LocalFolder,
-
         [Parameter(Mandatory = $true)]
         [string]$ScriptName,
-
         [string]$RemoteFolder = "C:\temp\remote_scripts",
         [hashtable]$Arguments = @{},
         [switch]$Cleanup,
@@ -120,44 +118,30 @@ function Invoke-RemoteScriptFolder {
     Write-Host "Папка      : $LocalFolder" -ForegroundColor Cyan
     Write-Host "Скрипт     : $ScriptName" -ForegroundColor Cyan
     Write-Host "Цель       : $RemoteFolder\$localFolderName" -ForegroundColor Cyan
-    Write-Host "Параллелизм: $ThrottleLimit машин одновременно" -ForegroundColor Cyan
-    if ($Arguments.Count -gt 0) {
-        Write-Host "Параметры  :" -ForegroundColor Cyan
-        $Arguments.GetEnumerator() | ForEach-Object { Write-Host "  $($_.Key) = $($_.Value)" }
-    }
     Write-Host "===================================================" -ForegroundColor Cyan
 
     $startTime = Get-Date
     $sessions = @()
 
     try {
-        # 1. СОЗДАЁМ ВСЕ СЕССИИ ОДНОВРЕМЕННО
-        Write-Host "`n📡 Устанавливаю соединения со всеми компьютерами..." -ForegroundColor Yellow
-        $sessions = New-PSSession -ComputerName $global:computers -Credential $global:cred -ErrorAction SilentlyContinue
+        Write-Host "`n📡 Устанавливаю соединения..." -ForegroundColor Yellow
+        $sessions = New-PSSession -ComputerName $global:computers -Credential $global:cred -Authentication Negotiate -ErrorAction SilentlyContinue
         
-        $failedComputers = $global:computers | Where-Object { 
-            $_ -notin ($sessions | ForEach-Object { $_.ComputerName }) 
-        }
-        
+        $failedComputers = $global:computers | Where-Object { $_ -notin ($sessions | ForEach-Object { $_.ComputerName }) }
         if ($sessions.Count -eq 0) { throw "Не удалось подключиться ни к одному компьютеру" }
         
         Write-Host "✅ Подключено: $($sessions.Count) из $($global:computers.Count)" -ForegroundColor Green
-        if ($failedComputers.Count -gt 0) {
-            Write-Host "⚠️  Недоступны: $($failedComputers -join ', ')" -ForegroundColor Yellow
-        }
+        if ($failedComputers.Count -gt 0) { Write-Host "⚠️ Недоступны: $($failedComputers -join ', ')" -ForegroundColor Yellow }
 
-        # 2. КОПИРУЕМ ПАПКУ НА ВСЕ МАШИНЫ
         Write-Host "`n📤 Копирую файлы на все машины..." -ForegroundColor Yellow
         foreach ($session in $sessions) {
             try {
                 Copy-Item -Path $LocalFolder -Destination $RemoteFolder -ToSession $session -Recurse -Force -ErrorAction Stop
-                Write-Host "   ✅ $($session.ComputerName)" -ForegroundColor DarkGreen
             } catch {
                 Write-Warning "   ❌ $($session.ComputerName): $($_.Exception.Message)"
             }
         }
 
-        # 3. ЗАПУСКАЕМ СКРИПТ НА ВСЕХ МАШИНАХ ОДНОВРЕМЕННО
         Write-Host "`n🚀 Запускаю скрипт на всех машинах (параллельно)..." -ForegroundColor Yellow
         $runResults = Invoke-Command -Session $sessions -ScriptBlock {
             param($remoteFolder, $localFolderName, $scriptName, $args_, $doCleanup)
@@ -171,32 +155,23 @@ function Invoke-RemoteScriptFolder {
                 $scriptFolder = Join-Path $remoteFolder $localFolderName
                 $scriptPath = Join-Path $scriptFolder $scriptName
                 
-                if (-not (Test-Path $scriptPath)) {
-                    throw "Скрипт не найден: $scriptPath"
-                }
-
+                if (-not (Test-Path $scriptPath)) { throw "Скрипт не найден: $scriptPath" }
                 Set-Location $scriptFolder
 
-                # 🔑 ИСПРАВЛЕНИЕ: Обход Execution Policy через запуск нового процесса с флагом Bypass
-                $psExe = "powershell.exe"
+                # Используем полный путь к powershell.exe для обхода Execution Policy
+                $psExe = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
+                if (-not (Test-Path $psExe)) { $psExe = "powershell.exe" }
+
                 $cmdParts = @("& '$scriptPath'")
-                
-                # Формируем аргументы командной строки из хеш-таблицы
                 if ($args_.Count -gt 0) {
                     foreach ($key in $args_.Keys) {
                         $val = $args_[$key]
-                        # Безопасно экранируем строковые значения
-                        if ($val -is [string]) {
-                            $val = "'$($val -replace "'", "''")'"
-                        }
+                        if ($val -is [string]) { $val = "'$($val -replace "'", "''")'" }
                         $cmdParts += "-$key $val"
                     }
                 }
                 
-                $commandLine = $cmdParts -join " "
-                
-                # Выполняем команду с принудительным обходом политики выполнения
-                $output = & $psExe -NoProfile -ExecutionPolicy Bypass -Command $commandLine 2>&1
+                $output = & $psExe -NoProfile -ExecutionPolicy Bypass -Command ($cmdParts -join " ") 2>&1
                 $exitCode = $LASTEXITCODE
             }
             catch {
@@ -205,8 +180,6 @@ function Invoke-RemoteScriptFolder {
             }
             finally {
                 $sw.Stop()
-                
-                # Очистка после выполнения
                 if ($doCleanup) {
                     $scriptFolder = Join-Path $remoteFolder $localFolderName
                     Remove-Item -LiteralPath $scriptFolder -Recurse -Force -ErrorAction SilentlyContinue
@@ -223,14 +196,13 @@ function Invoke-RemoteScriptFolder {
             }
         } -ArgumentList $RemoteFolder, $localFolderName, $ScriptName, $Arguments, $Cleanup.IsPresent -ThrottleLimit $ThrottleLimit
 
-        # 4. ОТЧЁТ
+        # ОТЧЁТ
         $totalTime = (Get-Date) - $startTime
-
         Write-Host "`n===================================================" -ForegroundColor Cyan
         Write-Host "ОТЧЁТ О ВЫПОЛНЕНИИ" -ForegroundColor Cyan
         Write-Host "===================================================" -ForegroundColor Cyan
 
-        $okCount   = ($runResults | Where-Object { $_.Status -eq "OK" }).Count
+        $okCount = ($runResults | Where-Object { $_.Status -eq "OK" }).Count
         $failCount = ($runResults | Where-Object { $_.Status -eq "FAIL" }).Count
 
         foreach ($r in $runResults) {
@@ -245,14 +217,10 @@ function Invoke-RemoteScriptFolder {
         }
 
         Write-Host "---------------------------------------------------"
-        Write-Host "Всего: $($runResults.Count) | OK: $okCount | FAIL: $failCount" -ForegroundColor Cyan
-        Write-Host "Общее время: $([math]::Round($totalTime.TotalSeconds, 1)) сек" -ForegroundColor Cyan
-
+        Write-Host "Всего: $($runResults.Count) | OK: $okCount | FAIL: $failCount | Время: $([math]::Round($totalTime.TotalSeconds, 1)) сек" -ForegroundColor Cyan
         return $runResults
     }
     finally {
-        if ($sessions.Count -gt 0) {
-            $sessions | Remove-PSSession -ErrorAction SilentlyContinue
-        }
+        if ($sessions.Count -gt 0) { $sessions | Remove-PSSession -ErrorAction SilentlyContinue }
     }
 }

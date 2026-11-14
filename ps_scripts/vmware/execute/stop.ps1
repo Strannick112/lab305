@@ -1,3 +1,3 @@
 . $PSScriptRoot\..\..\Invoke-OnAll.ps1
 
-Invoke-RemoteScriptFolder -LocalFolder "$PSScriptRoot\..\.." -ScriptName "vmware_stop_vm.ps1" -Cleanup
+Invoke-RemoteScriptFolder -LocalFolder "$PSScriptRoot\.." -ScriptName "stop.ps1" -Cleanup

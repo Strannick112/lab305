@@ -1,9 +1,0 @@
-$session = New-Object Microsoft.PowerShell.Commands.WebRequestSession
-$username = Get-Content "$PSScriptRoot\..\..\credentials\user.txt"
-$password = Get-Content "$PSScriptRoot\..\..\credentials\torrent_password.txt"
-$qbhost = Get-Content "$PSScriptRoot\..\..\credentials\host.txt"
-Invoke-WebRequest -Uri "$qbhost/api/v2/auth/login" -Method Post -Body @{username=$username; password=$password} -WebSession $session | Out-Null
-
-$response = Invoke-WebRequest -Uri "qbhost/api/v2/torrents/createTorrent" -Method Post -Body @{} -WebSession $session
-Write-Host "Status: $($response.StatusCode)"
-Write-Host "Response: $($response.Content)"
