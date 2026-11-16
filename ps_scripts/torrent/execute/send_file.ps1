@@ -7,4 +7,4 @@
 $torrentFilePath = Get-Content "$PSScriptRoot\..\config\torrent_file_path.txt"
 $torrentRemoteFilePath = Get-Content "$PSScriptRoot\..\config\torrent_remote_file_path.txt"
 
-Invoke-RemoteCopyFile -LocalPath $torrentFilePath -RemoteFolder $torrentRemoteFilePath
+$result = Invoke-RemoteCopyFile -LocalPath $torrentFilePath -RemoteFolder $torrentRemoteFilePath

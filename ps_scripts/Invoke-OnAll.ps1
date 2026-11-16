@@ -3,7 +3,7 @@ $username = Get-Content "$PSScriptRoot\credentials\username.txt"
 $password = Get-Content "$PSScriptRoot\credentials\password.txt" | ConvertTo-SecureString
 $global:cred = New-Object System.Management.Automation.PSCredential($username, $password)
 
-$CleanScriptPath = "$PSScriptRoot\clean_folders.ps1"
+$CleanScriptPath = "$PSScriptRoot\manage\code\clean_folders.ps1"
 $CleanPathsFile  = "$PSScriptRoot\config\path_for_clean.txt"
 
 # Загружаем список компьютеров
@@ -97,10 +97,8 @@ function Invoke-RemoteClean {
 function Invoke-RemoteScriptFolder {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
-        [string]$LocalFolder,
-        [Parameter(Mandatory = $true)]
-        [string]$ScriptName,
+        [Parameter(Mandatory = $true)][string]$LocalFolder,
+        [Parameter(Mandatory = $true)][string]$ScriptName,
         [string]$RemoteFolder = "C:\temp\remote_scripts",
         [hashtable]$Arguments = @{},
         [switch]$Cleanup,
@@ -114,105 +112,111 @@ function Invoke-RemoteScriptFolder {
     $localFolderName = Split-Path $LocalFolder -Leaf
 
     Write-Host "===================================================" -ForegroundColor Cyan
-    Write-Host "ПАРАЛЛЕЛЬНЫЙ запуск скрипта на $($global:computers.Count) машинах" -ForegroundColor Cyan
-    Write-Host "Папка      : $LocalFolder" -ForegroundColor Cyan
-    Write-Host "Скрипт     : $ScriptName" -ForegroundColor Cyan
-    Write-Host "Цель       : $RemoteFolder\$localFolderName" -ForegroundColor Cyan
+    Write-Host "Запуск на $($global:computers.Count) машинах" -ForegroundColor Cyan
+    Write-Host "Папка  : $LocalFolder" -ForegroundColor Cyan
+    Write-Host "Скрипт : $ScriptName" -ForegroundColor Cyan
+    Write-Host "Цель   : $RemoteFolder\$localFolderName" -ForegroundColor Cyan
     Write-Host "===================================================" -ForegroundColor Cyan
 
     $startTime = Get-Date
     $sessions = @()
 
     try {
-        Write-Host "`n📡 Устанавливаю соединения..." -ForegroundColor Yellow
+        Write-Host "`nУстанавливаю соединения..." -ForegroundColor Yellow
         $sessions = New-PSSession -ComputerName $global:computers -Credential $global:cred -Authentication Negotiate -ErrorAction SilentlyContinue
-        
-        $failedComputers = $global:computers | Where-Object { $_ -notin ($sessions | ForEach-Object { $_.ComputerName }) }
         if ($sessions.Count -eq 0) { throw "Не удалось подключиться ни к одному компьютеру" }
-        
-        Write-Host "✅ Подключено: $($sessions.Count) из $($global:computers.Count)" -ForegroundColor Green
-        if ($failedComputers.Count -gt 0) { Write-Host "⚠️ Недоступны: $($failedComputers -join ', ')" -ForegroundColor Yellow }
 
-        Write-Host "`n📤 Копирую файлы на все машины..." -ForegroundColor Yellow
-        foreach ($session in $sessions) {
+        $failed = $global:computers | Where-Object { $_ -notin $sessions.ComputerName }
+        Write-Host "Подключено: $($sessions.Count) из $($global:computers.Count)" -ForegroundColor Green
+        if ($failed) { Write-Host "Недоступны: $($failed -join ', ')" -ForegroundColor Yellow }
+
+        Write-Host "`nКопирую файлы..." -ForegroundColor Yellow
+        foreach ($s in $sessions) {
             try {
-                Copy-Item -Path $LocalFolder -Destination $RemoteFolder -ToSession $session -Recurse -Force -ErrorAction Stop
+                Copy-Item -Path $LocalFolder -Destination $RemoteFolder -ToSession $s -Recurse -Force -ErrorAction Stop
             } catch {
-                Write-Warning "   ❌ $($session.ComputerName): $($_.Exception.Message)"
+                Write-Warning "   $($s.ComputerName): $($_.Exception.Message)"
             }
         }
 
-        Write-Host "`n🚀 Запускаю скрипт на всех машинах (параллельно)..." -ForegroundColor Yellow
-        $runResults = Invoke-Command -Session $sessions -ScriptBlock {
-            param($remoteFolder, $localFolderName, $scriptName, $args_, $doCleanup)
-            
-            $sw = [System.Diagnostics.Stopwatch]::StartNew()
-            $exitCode = 0
-            $output = $null
-            $errors = @()
+        Write-Host "`nВыполняю скрипт..." -ForegroundColor Yellow
+        $runResults = Invoke-Command -Session $sessions -ThrottleLimit $ThrottleLimit `
+            -ArgumentList $RemoteFolder, $localFolderName, $ScriptName, $Arguments, $Cleanup.IsPresent `
+            -ScriptBlock {
+                param($remoteFolder, $localFolderName, $scriptName, $args_, $doCleanup)
 
-            try {
+                $sw = [System.Diagnostics.Stopwatch]::StartNew()
+                $exitCode = 0
+                $out = New-Object System.Collections.Generic.List[string]
+                $err = New-Object System.Collections.Generic.List[string]
                 $scriptFolder = Join-Path $remoteFolder $localFolderName
-                $scriptPath = Join-Path $scriptFolder $scriptName
-                
-                if (-not (Test-Path $scriptPath)) { throw "Скрипт не найден: $scriptPath" }
-                Set-Location $scriptFolder
 
-                # Используем полный путь к powershell.exe для обхода Execution Policy
-                $psExe = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
-                if (-not (Test-Path $psExe)) { $psExe = "powershell.exe" }
+                try {
+                    $scriptPath = Join-Path $scriptFolder $scriptName
+                    if (-not (Test-Path -LiteralPath $scriptPath)) { throw "Скрипт не найден: $scriptPath" }
+                    Set-Location -LiteralPath $scriptFolder
 
-                $cmdParts = @("& '$scriptPath'")
-                if ($args_.Count -gt 0) {
-                    foreach ($key in $args_.Keys) {
-                        $val = $args_[$key]
-                        if ($val -is [string]) { $val = "'$($val -replace "'", "''")'" }
-                        $cmdParts += "-$key $val"
+                    # обход ExecutionPolicy без дочернего процесса
+                    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force -ErrorAction SilentlyContinue
+                    $global:LASTEXITCODE = 0
+
+                    # КЛЮЧЕВОЕ: выполняем скрипт в этой же сессии.
+                    # Никакого powershell.exe, никакого консольного пайпа, никакого перекодирования.
+                    # *>&1 забирает все потоки, включая Write-Host (Information).
+                    & $scriptPath @args_ *>&1 | ForEach-Object {
+                        if ($_ -is [System.Management.Automation.ErrorRecord]) {
+                            $err.Add($_.Exception.Message)
+                        }
+                        elseif ($_ -is [System.Management.Automation.WarningRecord]) {
+                            $out.Add("WARNING: $($_.Message)")
+                        }
+                        elseif ($_ -is [System.Management.Automation.InformationRecord]) {
+                            $out.Add([string]$_.MessageData)
+                        }
+                        else {
+                            $out.Add([string]$_)
+                        }
+                    }
+
+                    if ($LASTEXITCODE) { $exitCode = $LASTEXITCODE }
+                }
+                catch {
+                    $exitCode = 1
+                    $err.Add($_.Exception.Message)
+                }
+                finally {
+                    $sw.Stop()
+                    if ($doCleanup) {
+                        Remove-Item -LiteralPath $scriptFolder -Recurse -Force -ErrorAction SilentlyContinue
                     }
                 }
-                
-                $output = & $psExe -NoProfile -ExecutionPolicy Bypass -Command ($cmdParts -join " ") 2>&1
-                $exitCode = $LASTEXITCODE
-            }
-            catch {
-                $exitCode = 1
-                $errors += $_.Exception.Message
-            }
-            finally {
-                $sw.Stop()
-                if ($doCleanup) {
-                    $scriptFolder = Join-Path $remoteFolder $localFolderName
-                    Remove-Item -LiteralPath $scriptFolder -Recurse -Force -ErrorAction SilentlyContinue
+
+                [pscustomobject]@{
+                    ComputerName = $env:COMPUTERNAME
+                    ExitCode     = $exitCode
+                    Output       = ($out -join "`r`n")
+                    Errors       = ($err -join "`r`n")
+                    DurationSec  = [math]::Round($sw.Elapsed.TotalSeconds, 2)
+                    Status       = if ($exitCode -eq 0) { "OK" } else { "FAIL" }
                 }
             }
 
-            [pscustomobject]@{
-                ComputerName = $env:COMPUTERNAME
-                ExitCode     = $exitCode
-                Output       = ($output | Out-String)
-                Errors       = ($errors | Out-String)
-                DurationSec  = [math]::Round($sw.Elapsed.TotalSeconds, 2)
-                Status       = if ($exitCode -eq 0) { "OK" } else { "FAIL" }
-            }
-        } -ArgumentList $RemoteFolder, $localFolderName, $ScriptName, $Arguments, $Cleanup.IsPresent -ThrottleLimit $ThrottleLimit
-
-        # ОТЧЁТ
         $totalTime = (Get-Date) - $startTime
         Write-Host "`n===================================================" -ForegroundColor Cyan
         Write-Host "ОТЧЁТ О ВЫПОЛНЕНИИ" -ForegroundColor Cyan
         Write-Host "===================================================" -ForegroundColor Cyan
 
-        $okCount = ($runResults | Where-Object { $_.Status -eq "OK" }).Count
-        $failCount = ($runResults | Where-Object { $_.Status -eq "FAIL" }).Count
+        $okCount   = @($runResults | Where-Object Status -eq 'OK').Count
+        $failCount = @($runResults | Where-Object Status -eq 'FAIL').Count
 
         foreach ($r in $runResults) {
             $color = if ($r.Status -eq "OK") { "Green" } else { "Red" }
             Write-Host ("{0,-20} [{1}] {2} сек" -f $r.ComputerName, $r.Status, $r.DurationSec) -ForegroundColor $color
-            if ($r.Output -and $r.Output.Trim()) {
-                $r.Output -split "`n" | Where-Object { $_.Trim() } | ForEach-Object { Write-Host "    $_" -ForegroundColor Gray }
+            if ($r.Output) {
+                $r.Output -split "`r?`n" | Where-Object { $_.Trim() } | ForEach-Object { Write-Host "    $_" -ForegroundColor Gray }
             }
-            if ($r.Errors -and $r.Errors.Trim()) {
-                $r.Errors -split "`n" | Where-Object { $_.Trim() } | ForEach-Object { Write-Host "    ОШИБКА: $_" -ForegroundColor Red }
+            if ($r.Errors) {
+                $r.Errors -split "`r?`n" | Where-Object { $_.Trim() } | ForEach-Object { Write-Host "    ОШИБКА: $_" -ForegroundColor Red }
             }
         }
 

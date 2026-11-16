@@ -2,7 +2,7 @@
 . .\Invoke-OnAll.ps1
 
 # Запускаем удаление на всех машинах параллельно
-Invoke-RemoteScriptFolder -LocalFolder "$PSScriptRoot\.." -ScriptName "code\remove.ps1" -Cleanup
+$result = Invoke-RemoteScriptFolder -LocalFolder "$PSScriptRoot\.." -ScriptName "code\remove.ps1" -Cleanup
 
 $removeSuccess = & "$PSScriptRoot\..\code\remove.ps1"
 

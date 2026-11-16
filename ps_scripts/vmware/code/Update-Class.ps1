@@ -1,4 +1,4 @@
-#Requires -RunAsAdministrator
+﻿#Requires -RunAsAdministrator
 # =====================================================================
 # Update-Classroom.ps1
 # Запускается НА СЕРВЕРЕ (там же, где лежит эталонная ВМ).

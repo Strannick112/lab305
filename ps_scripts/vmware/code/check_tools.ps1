@@ -1,4 +1,4 @@
-. $PSScriptRoot\..\..\Invoke-OnAll.ps1
+﻿. $PSScriptRoot\..\..\Invoke-OnAll.ps1
 
 Invoke-OnAll {
     $vmrun = Get-Content "..\config\vm_path.txt"
