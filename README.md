@@ -25,19 +25,22 @@ lab305
 |-- backend
 |   |-- ...
 |   |-- main.py
+|   |-- requirements.txt
 |-- frontend
-    |-- assets
-    |   |-- ccs
-    |   |   |-- bootstrap.min.css
-    |   |   |-- style.css
-    |   |   |-- swiper-bundle.min.css
-    |   |-- images
-    |   |   |-- ...
-    |   |-- js
-    |   |   |-- bootstrap.bundle.min.js
-    |   |   |-- swiper-bundle.min.js
-    |-- pages
-        |-- index.html
+|   |-- assets
+|   |   |-- ccs
+|   |   |   |-- bootstrap.min.css
+|   |   |   |-- style.css
+|   |   |   |-- swiper-bundle.min.css
+|   |   |-- images
+|   |   |   |-- ...
+|   |   |-- js
+|   |   |   |-- bootstrap.bundle.min.js
+|   |   |   |-- swiper-bundle.min.js
+|   |-- pages
+|       |-- index.html
+|-- .gitignore
+|-- README.md
 ```
 
 
