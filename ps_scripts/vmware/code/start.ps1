@@ -18,8 +18,6 @@ if (-not (Test-Path $vmrunPath)) {
     exit 1
 }
 
-$vmxPath = Get-Content "..\config\vmx_path.txt"
-
 # 1. Проверяем, не запущена ли ВМ уже
 Write-Host "1. Проверка состояния ВМ..." -ForegroundColor Yellow
 $runningVMs = & $vmrunPath list 2>&1

@@ -1,7 +1,6 @@
 # $cred = Get-Credential   # .\admin
 # $pcs  = 11..34 | ForEach-Object { "192.168.35.$_" }
-$gw   = Get-Content "$PSScriptRoot\..\..\config\gateway.txt"
-
+. "$PSScriptRoot\..\config\config.ps1"
 . $PSScriptRoot\..\..\Invoke-OnAll.ps1
 
 Invoke-OnAll {
