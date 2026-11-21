@@ -2,8 +2,7 @@
 # Универсальный скрипт выключения ВМ с автопоиском файла .vmx
 
 # ================= НАСТРОЙКИ =================
-$vmrunPath = Get-Content "$PSScriptRoot\..\config\vm_path.txt"
-$vmName = Get-Content "$PSScriptRoot\..\config\vm_name.txt"
+. "$PSScriptRoot\..\config\config.ps1"
 $shutdownTimeoutSec = 120
 $checkIntervalSec = 5
 $forceStop = $true

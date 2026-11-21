@@ -1,6 +1,5 @@
-﻿# callback.ps1
-$vmrunPath = Get-Content "$PSScriptRoot\..\config\vm_path.txt"
-$vmxPath   = Get-Content "$PSScriptRoot\..\config\vmx_path.txt"
+﻿# Конфигурация
+. "$PSScriptRoot\..\config\config.ps1"
 
 # Захват вывода сразу в массив
 $snapshots = @(& $vmrunPath -T ws listSnapshots $vmxPath)

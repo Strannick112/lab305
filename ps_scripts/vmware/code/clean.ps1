@@ -1,16 +1,5 @@
 ﻿# ================= НАСТРОЙКИ =================
-$vmxPath = Get-Content "$PSScriptRoot\..\config\vmx_path.txt"
-
-# Автоматический поиск vmrun.exe
-$vmrunPath = Get-Content "$PSScriptRoot\..\config\vm_path.txt"
-if (-Not (Test-Path $vmrunPath)) {
-    $vmrunPath = Get-Content "$PSScriptRoot\..\config\vm_x64_path.txt"
-}
-
-if (-Not (Test-Path $vmrunPath)) {
-    Write-Error "Не удалось найти vmrun.exe. Проверьте установку VMware Workstation."
-    exit 1
-}
+. "$PSScriptRoot\..\config\config.ps1"
 # =============================================
 
 Write-Host "1. Получение списка снапшотов..." -ForegroundColor Yellow
