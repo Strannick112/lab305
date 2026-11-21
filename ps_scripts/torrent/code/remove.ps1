@@ -9,40 +9,17 @@
 # $true  — удалить и торрент, и скачанные файлы с диска
 . "$PSScriptRoot\..\config\config.ps1"
 
+# Проверка, запущен ли qbittorrent
+. "$PSScriptRoot\check_online.ps1"
+
+# Авторизация в qbittorrent
+. "$PSScriptRoot\auth.ps1"
+
 $deleteFiles = $false
 $deleteFilesStr = if ($deleteFiles) { "true" } else { "false" }
 # =============================================
 
 Write-Host "=== Удаление торрента '$torrentName' на $env:COMPUTERNAME ===" -ForegroundColor Cyan
-
-# 0. Проверяем, запущен ли qBittorrent
-Write-Host "0. Проверка состояния qBittorrent..." -ForegroundColor Yellow
-$qbProcess = Get-Process qbittorrent -ErrorAction SilentlyContinue
-if (-not $qbProcess) {
-    Write-Host "   ℹ️  qBittorrent не запущен — удалять нечего." -ForegroundColor DarkGray
-    exit 0
-} else {
-    Write-Host "   ✅ qBittorrent запущен" -ForegroundColor Green
-}
-
-# 1. Авторизация
-Write-Host "1. Авторизация в qBittorrent..." -ForegroundColor Yellow
-$session = New-Object Microsoft.PowerShell.Commands.WebRequestSession
-
-try {
-    $loginResponse = Invoke-WebRequest -Uri "$qbHost/api/v2/auth/login" -Method Post -Body @{
-        username = $qbUser; password = $qbPass
-    } -WebSession $session -UseBasicParsing -TimeoutSec 10
-    
-    if ($loginResponse.Content -ne "Ok.") {
-        Write-Error "Ошибка авторизации. Проверьте логин и пароль."
-        exit 1
-    }
-    Write-Host "   ✅ Успешно" -ForegroundColor Green
-} catch {
-    Write-Error "Не удалось подключиться к qBittorrent: $_"
-    exit 1
-}
 
 # 2. Ищем торрент по имени
 Write-Host "2. Поиск торрента '$torrentName'..." -ForegroundColor Yellow
