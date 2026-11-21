@@ -1,0 +1,30 @@
+# Формат: [ТИП_ДЕЙСТВИЯ] путь
+# Типы действий:
+# DELETE - удалить объект целиком (файл или папку)
+# CLEAR  - очистить только содержимое папки (папка останется)
+# FILE   - удалить файл
+
+# Удалить файлы
+# [FILE] C:\Temp\old_log.txt
+# [FILE] D:\Downloads\setup.exe
+# [FILE] E:\Cache\temp_data.tmp
+
+# [FILE] № 4901 от 14.10.2026 УП.09.01 4 курс веб 09.02.07.pdf
+
+
+# Удалить папки целиком (вместе со всем содержимым)
+# [DELETE] C:\Users\Student\Downloads\backups
+# [DELETE] D:\Cache\TempFiles
+# [DELETE] \\Server\Share\DeprecatedFolder
+
+[DELETE] C:\Users\Student\AppData\Local\Roblox
+
+# Очистить только содержимое папок (сами папки останутся пустыми)
+# [CLEAR] C:\Temp\Downloads
+# [CLEAR] D:\Logs\Archive
+# [CLEAR] E:\Cache\BrowserCache
+
+[CLEAR] C:\Users\Student\Downloads
+[CLEAR] C:\Users\Student\VirtualBox VMs
+[FILE] C:\Users\Student\Documents\Virtual Machines\demo305\demo2026.zip
+

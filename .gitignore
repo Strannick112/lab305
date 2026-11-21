@@ -1,0 +1,6 @@
+ps_scripts/credentials/password.txt
+ps_scripts/credentials/torrent_password
+ps_scripts/credentials/username.txt
+ps_scripts/config/pcs.csv
+ps_scripts/config/pcs_all.csv
+ps_scripts/torrent/config/config.ps1
