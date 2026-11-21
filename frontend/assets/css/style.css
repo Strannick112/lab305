@@ -1,0 +1,148 @@
+:root {
+    --body-color: #f8f9fa;
+    --accent-color: #0000ff;
+    --text-color: #1a1e21;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    background-color: var(--body-color);
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-link {
+    color: var(--text-color);
+}
+.nav-link:hover {
+    color: var(--accent-color);
+}
+
+.slider-container {
+    position: relative;
+    padding: 0 64px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+img {
+    background: var(--body-color) !important;
+}
+
+.mySwiper {
+    width: 100%;
+    overflow: visible;
+}
+
+.mySwiper .swiper-wrapper {
+    overflow: visible;
+}
+
+.mySwiper .swiper-slide {
+    height: 40vh;
+    display: flex;
+    overflow: visible;
+}
+
+.swiper-slide .card {
+    width: 32vw;
+    min-width: 180px;
+    background-color: var(--card-color);
+    transition: transform 0.3s ease;
+    will-change: transform;
+}
+
+.swiper-slide .card:hover {
+    transform: scale(1.15);
+    box-shadow: 0 0.5rem 1rem var(--card-shadow-color) !important;
+    z-index: 10;
+}
+
+
+.mySwiper .swiper-slide .card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 12px;
+    overflow: visible;
+}
+
+.mySwiper .swiper-slide .card-body p {
+    margin: 8px 0 0 0;
+    color: var(--text-color);
+    font-weight: bold;
+}
+
+.mySwiper .swiper-slide .circle {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: var(--body-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    transition: background-color 0.3s ease;
+}
+
+.mySwiper .swiper-slide .logo {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+    display: block;
+    border: none;
+    overflow: visible;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+    color: var(--accent-color);
+    z-index: 20;
+}
+.swiper-button-prev { left: 0; }
+.swiper-button-next { right: 0; }
+
+.card {
+    height: 20vh;
+}
+
+
+
+#card__gitea {
+    --card-color: #609926;
+    --card-shadow-color: #5f992680;
+}
+
+#card__fileserver {
+    --card-color: #faeb96;
+    --card-shadow-color: #faeb9680;
+}
+
+#card__vlc {
+    --card-color: #ff8800;
+    --card-shadow-color: #ff880080;
+}
+
+#card__proget {
+    --card-color: #3fa9f5;
+    --card-shadow-color: #3fa9f580;
+}
+
+#card__devdocs {
+    --card-color: #cecece;
+    --card-shadow-color: #cecece80;
+}
