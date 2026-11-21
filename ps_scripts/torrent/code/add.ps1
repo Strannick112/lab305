@@ -1,5 +1,4 @@
-﻿# add_torrent.ps1
-# Подключаем конфигурацию из той же папки
+﻿# Конфигурация
 . "$PSScriptRoot\..\config\config.ps1"
 
 if (-Not (Test-Path $torrentFilePath)) {
@@ -7,33 +6,11 @@ if (-Not (Test-Path $torrentFilePath)) {
     return $false
 }
 
-# 0. Проверяем, запущен ли qBittorrent
-Write-Host "0. Проверка состояния qBittorrent..." -ForegroundColor Yellow
-$qbProcess = Get-Process qbittorrent -ErrorAction SilentlyContinue
+# Проверка, запущен ли qbittorrent
+. "$PSScriptRoot\check_online.ps1"
 
-if (-not $qbProcess) {
-    Write-Warning "qBittorrent не запущен. Пытаюсь запустить..."
-    try {
-        Start-Process "qbittorrent.exe" -WindowStyle Hidden -ErrorAction Stop
-        Start-Sleep -Seconds 5 # Ждем инициализации Web UI
-    } catch {
-        Write-Error "Не удалось запустить qBittorrent. Убедитесь, что он установлен."
-        exit 1
-    }
-} else {
-    Write-Host "   ✅ qBittorrent уже запущен" -ForegroundColor Green
-}
-
-
-
-Write-Host "1. Авторизация в qBittorrent..." -ForegroundColor Yellow
-$session = New-Object Microsoft.PowerShell.Commands.WebRequestSession
-$loginResponse = Invoke-WebRequest -Uri "$qbHost/api/v2/auth/login" -Method Post -Body @{ username = $qbUser; password = $qbPass } -WebSession $session -UseBasicParsing
-
-if ($loginResponse.Content -ne "Ok.") {
-    Write-Error "Ошибка авторизации."
-    return $false
-}
+# Авторизация в qbittorrent
+. "$PSScriptRoot\auth.ps1"
 
 Write-Host "2. Добавление торрента в очередь загрузок..." -ForegroundColor Yellow
 $torrentBytes = [System.IO.File]::ReadAllBytes($torrentFilePath)

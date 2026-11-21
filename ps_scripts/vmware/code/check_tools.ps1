@@ -1,18 +1,10 @@
-﻿. $PSScriptRoot\..\..\Invoke-OnAll.ps1
+﻿# Конфигурация
+. "$PSScriptRoot\..\config\config.ps1"
+. $PSScriptRoot\..\..\Invoke-OnAll.ps1
 
-Invoke-OnAll {
-    $vmrun = Get-Content "..\config\vm_path.txt"
-    
-    # Ищем .vmx файл (как в вашем скрипте)
-    $vmx = Get-ChildItem -Path "C:\" -Filter "demo305.vmx" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
-    
-    if (-not $vmx) {
-        Write-Host "❌ ВМ не найдена" -ForegroundColor Red
-        return
-    }
-    
+Invoke-OnAll {        
     # Проверяем VMware Tools
-    $result = & $vmrun getGuestIPAddress $vmx.FullName 2>&1
+    $result = & $vmrunPath getGuestIPAddress $vmxPath 2>&1
     
     if ($result -match "^\d+\.\d+\.\d+\.\d+$") {
         Write-Host "✅ VMware Tools установлены. IP: $result" -ForegroundColor Green

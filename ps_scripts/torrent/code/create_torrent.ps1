@@ -3,14 +3,11 @@
 . "$PSScriptRoot\..\config\config.ps1"
 
 
-Write-Host "1. Авторизация в qBittorrent..." -ForegroundColor Yellow
-$session = New-Object Microsoft.PowerShell.Commands.WebRequestSession
-$loginResponse = Invoke-WebRequest -Uri "$qbHost/api/v2/auth/login" -Method Post -Body @{ username = $qbUser; password = $qbPass } -WebSession $session -UseBasicParsing
+# Проверка, запущен ли qbittorrent
+. "$PSScriptRoot\check_online.ps1"
 
-if ($loginResponse.Content -ne "Ok.") {
-    Write-Error "Ошибка авторизации. Проверьте логин и пароль в config.ps1."
-    return $false
-}
+# Авторизация в qbittorrent
+. "$PSScriptRoot\auth.ps1"
 
 Write-Host "2. Запуск задачи создания торрента..." -ForegroundColor Yellow
 $taskBody = @{

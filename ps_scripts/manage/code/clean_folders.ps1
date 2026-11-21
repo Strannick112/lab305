@@ -14,7 +14,7 @@
 #>
 
 param (
-    [string]$FilePath = "$PSScriptRoot\..\..\config\path_for_clean.txt",
+    [string]$FilePath = "$PSScriptRoot\..\config\path_for_clean.txt",
     [switch]$WhatIf
 )
 

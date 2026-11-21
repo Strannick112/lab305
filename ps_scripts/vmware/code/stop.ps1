@@ -2,8 +2,7 @@
 # Универсальный скрипт выключения ВМ с автопоиском файла .vmx
 
 # ================= НАСТРОЙКИ =================
-$vmrunPath = Get-Content "$PSScriptRoot\..\config\vm_path.txt"
-$vmName = Get-Content "$PSScriptRoot\..\config\vm_name.txt"
+. "$PSScriptRoot\..\config\config.ps1"
 $shutdownTimeoutSec = 120
 $checkIntervalSec = 5
 $forceStop = $true
@@ -16,8 +15,6 @@ if (-not (Test-Path $vmrunPath)) {
     Write-Error "vmrun.exe не найден по пути: $vmrunPath"
     exit 1
 }
-
-$vmxPath = Get-Content "..\config\vmx_path.txt"
 
 # 1. Проверяем, запущена ли ВМ
 Write-Host "1. Проверка состояния ВМ..." -ForegroundColor Yellow

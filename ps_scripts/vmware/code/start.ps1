@@ -2,8 +2,7 @@
 # Универсальный скрипт запуска ВМ с автопоиском файла .vmx
 
 # ================= НАСТРОЙКИ =================
-$vmrunPath = Get-Content "$PSScriptRoot\..\config\vm_path.txt"
-$vmName = Get-Content "$PSScriptRoot\..\config\vm_name.txt"
+. "$PSScriptRoot\..\config\config.ps1"
 $startMode = "gui"              # "gui" (с окном) или "nogui" (в фоне)
 $startupTimeoutSec = 180        # Сколько ждать запуска ВМ
 $checkIntervalSec = 5           # Интервал проверки статуса
@@ -18,8 +17,6 @@ if (-not (Test-Path $vmrunPath)) {
     Write-Error "vmrun.exe не найден по пути: $vmrunPath"
     exit 1
 }
-
-$vmxPath = Get-Content "..\config\vmx_path.txt"
 
 # 1. Проверяем, не запущена ли ВМ уже
 Write-Host "1. Проверка состояния ВМ..." -ForegroundColor Yellow
