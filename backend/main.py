@@ -46,3 +46,7 @@ def get_admin_page(username: str = Depends(authenticate_admin)):
     # Путь к файлу из папки frontend относительно папки backend
     admin_page_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../frontend/pages/admin.html"))
     return FileResponse(admin_page_path)
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="127.0.0.1", port=8003, reload=True)
