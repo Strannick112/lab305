@@ -40,11 +40,16 @@ app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
 async def read_index():
     return FileResponse(os.path.join(PAGES_DIR, "index.html"))
 
+# Маршрут для отдачи страницы с видеопроигрывателем stream.html
+@app.get("/stream")
+async def read_index():
+    return FileResponse(os.path.join(PAGES_DIR, "stream.html"))
+
 # Защищенный маршрут для админки (сначала проверяет пароль)
 @app.get("/admin")
 def get_admin_page(username: str = Depends(authenticate_admin)):
     # Путь к файлу из папки frontend относительно папки backend
-    admin_page_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../frontend/pages/admin.html"))
+    admin_page_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../frontend/pages/stream.html"))
     return FileResponse(admin_page_path)
 
 if __name__ == "__main__":
